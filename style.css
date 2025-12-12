@@ -1,0 +1,215 @@
+ :root {
+      /* New Vibrant Color Palette */
+      --main-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --btn-login: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+      --btn-out: linear-gradient(to right, #f83600 0%, #f9d423 100%);
+      --glass-bg: rgba(255, 255, 255, 0.92);
+      --text-dark: #2d3436;
+      --accent: #6c5ce7;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--main-gradient);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 15px;
+    }
+
+    /* Floating Card Animation */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .main-wrapper {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      width: 100%;
+      max-width: 380px;
+      padding: 35px 25px;
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      text-align: center;
+      animation: slideUp 0.6s ease-out;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .logo-img {
+      height: 70px;
+      width: auto;
+      margin-bottom: 15px;
+     
+      padding: 5px;
+      border-radius: 15px;
+      
+    }
+
+    marquee {
+      background: rgba(108, 92, 231, 0.1);
+      padding: 6px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    marquee h2 {
+      font-size: 13px;
+      margin: 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    h2 b {
+      color: var(--text-dark);
+      font-size: 24px;
+      display: block;
+      margin-bottom: 25px;
+      letter-spacing: -0.5px;
+    }
+
+    /* Modern Inputs */
+    #regInput {
+      width: 100%;
+      padding: 15px 20px;
+      border-radius: 15px;
+      border: 2px solid #dfe6e9;
+      background: #fdfdfd;
+      font-size: 16px;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+      color: var(--text-dark);
+    }
+
+    #regInput:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(108, 92, 231, 0.2);
+    }
+
+    /* Button Styling */
+    button {
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--btn-login);
+      color: white;
+      border-radius: 15px;
+      font-size: 18px;
+      box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Small App-Style Buttons */
+    .secondary-btns {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .small-link {
+      color: #636e72;
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px;
+      transition: 0.2s;
+    }
+
+    .small-link:hover {
+      color: var(--accent);
+    }
+
+    .create-text {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Attendance Active View */
+    #statusMsg {
+      font-size: 14px;
+      background: #f0f3ff;
+      padding: 15px;
+      border-radius: 15px;
+      color: var(--accent);
+      margin-bottom: 20px;
+      border-left: 4px solid var(--accent);
+      text-align: left;
+    }
+
+    .out-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--btn-out);
+      color: white;
+      border-radius: 15px;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 8px 20px rgba(248, 54, 0, 0.2);
+    }
+
+    .history-btn {
+      width: 100%;
+      background: #f1f2f6;
+      color: #2d3436;
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    /* Modal Styling */
+    .modal-card {
+      background: white;
+      padding: 25px;
+      border-radius: 25px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+
+    th {
+      background: #f8f9fa;
+      padding: 12px;
+      font-size: 12px;
+      color: #636e72;
+      text-transform: uppercase;
+    }
+
+    td {
+      background: #fcfcfc;
+      padding: 12px;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+    }
+
+    td:first-child { border-left: 1px solid #eee; border-radius: 10px 0 0 10px; }
+    td:last-child { border-right: 1px solid #eee; border-radius: 0 10px 10px 0; }
