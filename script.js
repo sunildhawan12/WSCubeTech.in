@@ -4,8 +4,8 @@
 
 
 
-const allowedLat = 26.89179739849143;  
-const allowedLng = 75.79129782325532;
+const allowedLat = 26.86272754130158; 
+const allowedLng = 75.79529954563588;
 const radius = 2;
 
 const studentMap = {
@@ -204,5 +204,6 @@ function renderHistoryTable(data) {
       </tr>`;
   });
 }
+
 
 
