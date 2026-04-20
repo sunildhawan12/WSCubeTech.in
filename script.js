@@ -1,10 +1,11 @@
-// ✅ Smart Attendance System - Fixed Version
-const allowedLat = 26.89165975608599;
-const allowedLng = 75.79147231591557;
-const radius = 0.5; // 500 meters (आधे किलोमीटर का दायरा - इसे आप 0.1 या 0.2 भी कर सकते हैं)
+// ✅ Location कोआर्डिनेट्स (WSCube Tech Jaipur)
+const allowedLat = 26.86287451427167;     
+const allowedLng = 75.79533158109675;
+const radius = 0.5; 
 
 const studentMap = {
   "100" : "Sunil jat",
+  "890":"Harshit",
   "109": "Manish",
   "110": "Manu",
   "469": "Mahendra Gahlot",
@@ -25,14 +26,14 @@ function saveAndProceed() {
 }
 
 function getDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Earth's radius in km
+  const R = 6371; 
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = Math.sin(dLat / 2) ** 2 +
     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
     Math.sin(dLon / 2) ** 2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c; // Distance in KM
+  return R * c; 
 }
 
 function checkLocation(id) {
@@ -50,30 +51,14 @@ function checkLocation(id) {
   if (lastDate === today && status === "IN") {
     const time = localStorage.getItem("firstInTime");
     statusMsg.innerHTML = `✅ Hello <b style="color:#ff009d">${name}</b>, आप पहले ही "🟢IN" हो चुके हैं<br>⏰ समय: ${time}`;
+    showHistory(); // IN होने पर भी हिस्ट्री दिखाएं
     return;
   }
 
-  statusMsg.innerHTML = "📡 आपकी लोकेशन जाँची जा रही है, कृपया रुकें...";
-
-  if (!navigator.geolocation) {
-    statusMsg.innerHTML = "❌ आपका ब्राउज़र Location सपोर्ट नहीं करता।";
-    return;
-  }
-
-  // 📍 GPS Accuracy Options
-  const geoOptions = {
-    enableHighAccuracy: true, 
-    timeout: 10000, 
-    maximumAge: 0
-  };
+  statusMsg.innerHTML = "📡 लोकेशन जाँची जा रही है...";
 
   navigator.geolocation.getCurrentPosition(pos => {
-    const currentLat = pos.coords.latitude;
-    const currentLng = pos.coords.longitude;
-    const dist = getDistance(currentLat, currentLng, allowedLat, allowedLng);
-
-    // Debugging के लिए console में दूरी देख सकते हैं
-    console.log(`Distance: ${dist} km`);
+    const dist = getDistance(pos.coords.latitude, pos.coords.longitude, allowedLat, allowedLng);
 
     if (dist <= radius) {
       const now = new Date();
@@ -83,16 +68,80 @@ function checkLocation(id) {
       localStorage.setItem("lastActionDate", today);
       localStorage.setItem("firstInTime", timeStr);
 
-      statusMsg.innerHTML = `✅ Hello <b style="color:#ff009d">${name}</b>, आप School क्षेत्र में हैं!<br>🟢 IN दर्ज: ⏰${timeStr}`;
+      statusMsg.innerHTML = `✅ Hello <b style="color:#ff009d">${name}</b>, आप WSCube Tech Institute क्षेत्र में हैं!<br>🟢 IN दर्ज: ⏰${timeStr}`;
       markAttendanceSilent("IN");
       setTimeout(showHistory, 2000);
     } else {
-      statusMsg.innerHTML = `❌ आप बाहर हैं (दूरी: ${(dist * 1000).toFixed(0)} मीटर)।<br>स्कूल पहुँचकर फिर से कोशिश करें।`;
+      statusMsg.innerHTML = `❌ आप बाहर हैं (दूरी: ${(dist * 1000).toFixed(0)} मीटर)।`;
     }
-
   }, err => {
-    statusMsg.innerHTML = `❌ GPS Error: ${err.message}. कृपया Location ON करें।`;
-  }, geoOptions);
+    statusMsg.innerHTML = `❌ GPS Error: ${err.message}.`;
+  }, { enableHighAccuracy: true, timeout: 10000 });
 }
 
-// बाकी Functions (markAttendanceSilent, manualOut, showHistory, renderHistoryTable) वैसे ही रहेंगे।
+// --- 🟢 HISTORY LOGIC FIXED ---
+
+function showHistory() {
+  const id = localStorage.getItem("regId");
+  if (!id) return;
+
+  const hb = document.getElementById("historyTableBody");
+  const modal = document.getElementById("historyModal");
+  
+  if (modal) modal.style.display = "flex";
+  if (hb) hb.innerHTML = "<tr><td colspan='4' style='text-align:center;'>लोड हो रहा है...</td></tr>";
+
+  // Google Sheet से हिस्ट्री फेच करना
+  fetch(`${historyUrl}?type=history&id=${id}`)
+    .then(res => res.json())
+    .then(data => {
+      renderHistoryTable(data);
+    })
+    .catch(err => {
+      console.error("History Error:", err);
+      if (hb) hb.innerHTML = "<tr><td colspan='4'>❌ हिस्ट्री लोड करने में विफल!</td></tr>";
+    });
+}
+
+function renderHistoryTable(data) {
+  const hb = document.getElementById("historyTableBody");
+  if (!hb) return;
+  hb.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    hb.innerHTML = "<tr><td colspan='4'>कोई डेटा नहीं मिला।</td></tr>";
+    return;
+  }
+
+  // डेटा को उल्टा (Reverse) करना ताकि ताज़ा रिकॉर्ड ऊपर आए
+  const sortedData = [...data].reverse();
+
+  sortedData.forEach(e => {
+    const icon = e.status === "IN" ? "🟢" : "🔴";
+    hb.innerHTML += `
+      <tr style="border-bottom: 1px solid #ddd;">
+        <td style="padding: 8px;">${e.date}</td>
+        <td style="padding: 8px;">${e.time}</td>
+        <td style="padding: 8px;">${icon} ${e.status}</td>
+        <td style="padding: 8px;">${e.name}</td>
+      </tr>`;
+  });
+}
+
+function markAttendanceSilent(status) {
+  const id = localStorage.getItem("regId");
+  const formData = new URLSearchParams({ ID: id, Status: status, Location: "auto" });
+  fetch(URL, { method: "POST", body: formData })
+    .then(() => console.log("Data Sync Done"))
+    .catch(err => console.error("Sync Error:", err));
+}
+
+function manualOut() {
+  const id = localStorage.getItem("regId");
+  if (!id) return;
+  
+  localStorage.setItem("attendanceStatus", "OUT");
+  markAttendanceSilent("OUT");
+  statusMsg.innerHTML = `🔴 आप "OUT" हो चुके हैं।`;
+  setTimeout(showHistory, 1500);
+}
