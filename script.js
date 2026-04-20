@@ -4,8 +4,8 @@
 
 
 
-const allowedLat = 26.892225327421666;
-const allowedLng = 75.78967465368311;
+const allowedLat = 26.89165975608599;
+const allowedLng =  75.79147231591557;
 const radius = 2;
 
 const studentMap = {
